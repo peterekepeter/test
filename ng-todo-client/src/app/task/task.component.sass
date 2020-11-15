@@ -1,0 +1,29 @@
+app-task
+    margin-left: 1em
+
+div.task-item
+    display: flex
+    align-items: center
+
+    div.item-actions
+        opacity: 0
+        transition: opacity 100ms linear
+        user-select: none
+
+    &:hover
+        div.item-actions
+            opacity: 1
+
+
+input
+    border: none
+    flex-grow: 1
+    height: 1.5rem
+    font-size: 1rem
+    font-weight: bold
+    margin-left: 0.5rem
+
+div.item-actions
+    display: inline
+    
+

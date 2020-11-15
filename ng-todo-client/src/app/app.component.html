@@ -1,0 +1,12 @@
+
+<section class="tasks-section">
+  <app-task *ngFor="let t of tasks" [task]="t"></app-task>
+
+</section>
+<section class="bottom-bar">
+
+  <button mat-icon-button aria-label="Add task" (click)="addRootTask()">
+    <mat-icon>add</mat-icon>
+  </button>
+  
+</section>

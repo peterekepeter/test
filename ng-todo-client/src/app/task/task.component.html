@@ -1,0 +1,25 @@
+<div class="task-item">
+    <mat-checkbox 
+        class="example-margin"
+        [checked]="allComplete"
+        [indeterminate]="someComplete"
+        (change)="setComplete($event.checked)">
+    </mat-checkbox>
+    
+    <input [value]="name" (input)="rename($event.target.value)" (keydown.enter)="nextTask()">
+
+    <div class="item-actions">
+        <button mat-icon-button aria-label="Edit task">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Add sub-task">
+            <mat-icon>add</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Add delete-task">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+</div>
+
+<app-task *ngFor="let t of subtasks" [task]="t"></app-task>
+    

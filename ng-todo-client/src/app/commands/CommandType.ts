@@ -1,5 +1,7 @@
 export enum CommandType {
   Toggle = "TOGGLE",
   Create = "CREATE",
-  Rename = "RENAME"
+  Rename = "RENAME",
+  Destroy = "DESTROY",
+  Move = "MOVE"
 }

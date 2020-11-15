@@ -1,21 +1,26 @@
 <div class="task-item">
     <mat-checkbox 
         class="example-margin"
-        [checked]="allComplete"
-        [indeterminate]="someComplete"
-        (change)="setComplete($event.checked)">
+        [checked]="completed"
+        (change)="setComplete($event.checked)"
+        tabindex="1">
     </mat-checkbox>
     
-    <input [value]="name" (input)="rename($event.target.value)" (keydown.enter)="nextTask()">
+    <input 
+        #inputRef
+        [value]="name" 
+        (input)="rename($event.target.value)" 
+        (keydown.enter)="nextTask()"
+        tabindex="2">
 
     <div class="item-actions">
-        <button mat-icon-button aria-label="Edit task">
-            <mat-icon>edit</mat-icon>
+        <button mat-icon-button aria-label="Move to top" (click)="moveToTop()" tabindex="-1">
+            <mat-icon>vertical_align_top</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Add sub-task">
+        <button mat-icon-button aria-label="Add sub-task" (click)="createSubtask()" tabindex="-1">
             <mat-icon>add</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Add delete-task">
+        <button mat-icon-button aria-label="Add delete-task" (click)="deleteTask()" tabindex="-1">
             <mat-icon>delete</mat-icon>
         </button>
     </div>

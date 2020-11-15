@@ -1,5 +1,5 @@
 
 
-export function generateUniquId(){
+export function generateUniqueId(){
     return [Date.now(),Math.random()].join();
 }

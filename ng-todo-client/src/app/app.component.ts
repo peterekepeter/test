@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import { ActionsService } from './actions.service';
 import { Task } from './Task';
 import { TaskService } from './task.service';
@@ -19,12 +19,16 @@ export class AppComponent {
   }
 
   constructor(private _tasks: TaskService,
-    private _act: ActionsService){
+    private _act: ActionsService,
+    private _ref: ChangeDetectorRef){
 
+      setInterval(() => {
+        this._ref.detectChanges();
+        console.log('cd');
+      }, 1000);
   }
 
   addRootTask(){
-    console.log('here');
     this._act.createRootTask();
   }
 

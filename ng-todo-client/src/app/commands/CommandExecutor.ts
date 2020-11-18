@@ -41,7 +41,6 @@ export class CommandExecutor
             default:
                 console.warn('not supported',cmd);
         }
-        console.log('STATE', this.rootTasks);
     }
 
     execMove(cmd: IMoveCommand) {

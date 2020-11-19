@@ -29,7 +29,6 @@ namespace multi_user_todo_list
             finally{
                 await clients.Remove(client);
             }
-            throw new NotImplementedException();
         }
 
         private async Task ReceiveMessage(ClientConnection client, string utfString)

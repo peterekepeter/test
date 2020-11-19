@@ -16,33 +16,27 @@ export class TaskSyncService {
 
     constructor(private _socket_client: SocketClientService,
         private _document: DocumentService) {
-        setTimeout(() => this.loadFromLocalStorage(), 0);
+        _document.document_id.subscribe(document_id => {
+            this.load_from_server(document_id);
+        });
     }
 
     add(cmd: ICommand) {
         this.list.push(cmd);
-        this.storeInLocalStorage();
         this._socket_client.send(JSON.stringify({
             method: "WRITE",
             document_id: this._document.document_id.value,
             command: cmd
         }));
     }
-
-    storeInLocalStorage() {
-        const str = JSON.stringify(this.list);
-        localStorage.setItem(TaskSyncService.STORAGE_KEY, str);
-    }
-
-    loadFromLocalStorage() {
-        const str = localStorage.getItem(TaskSyncService.STORAGE_KEY);
-        if (!str) {
+    
+    async load_from_server(document_id: string) {
+        const request = await fetch('document/' + encodeURIComponent(document_id));
+        if (request.status !== 200){
             return;
         }
-        this.list = JSON.parse(str);
-        if (this.list.length == 0) {
-            return 0;
-        }
+        const result = await request.json() as ICommand[];
+        this.list = result;
         this.historyChanged.next(this.list);
     }
 }

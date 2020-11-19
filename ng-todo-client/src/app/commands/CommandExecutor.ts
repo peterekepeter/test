@@ -72,11 +72,13 @@ export class CommandExecutor
 
     execToggle(cmd: IToggleCommand) {
         const task = this.getTaskById(cmd.id);
+        if (!task){ return; }
         task.completed = cmd.state;
     }
 
     execRename(cmd: IRenameCommand) {
         const task : Task = this.getTaskById(cmd.id);
+        if (!task){ return; }
         task.name = cmd.name;
     }
 

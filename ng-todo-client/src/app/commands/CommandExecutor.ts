@@ -39,7 +39,7 @@ export class CommandExecutor
                 this.execMove(cmd as IMoveCommand);
                 break;
             default:
-                console.warn('not supported',cmd);
+                console.log('not supported',cmd, cmd.type);
         }
     }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -40,12 +41,33 @@ namespace multi_user_todo_list
                     client.WatchDocumentId = obj.document_id;
                     break;
                 case "WRITE":
-                    await _document.AppendCommand(obj.document_id, obj.command);
+                    string document_id = obj.document_id;
+                    client.WatchDocumentId = document_id;
+                    var updated_command = await _document.AppendCommand(document_id, obj.command);
+                    var watchers = clients.AllClientsWatching(document_id)
+                        .Where(c => c != client);
+                    BroadcastToClients(watchers, updated_command);
                     break;
                 default:
                     Console.WriteLine($"Unknown method: {method} message: {utfString}");
                     break;
             }
+        }
+
+        private void BroadcastToClients(IEnumerable<ClientConnection> clients, dynamic updated_command)
+        {
+            var list = clients.ToList();
+            Console.WriteLine($"Broadcasting to {list.Count} clients");
+            foreach (var client in clients)
+            {
+                SendMessage(client, updated_command);
+            }
+        }
+
+        private async void SendMessage(ClientConnection client, object message){
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(message);
+            var bytes = Encoding.UTF8.GetBytes(json);
+            await client.Socket.SendAsync(bytes, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
         private async Task ReadLoop(ClientConnection client)

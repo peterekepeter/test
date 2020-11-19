@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ICommand } from './commands/ICommand';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class SocketClientService {
+
+    receive = new Subject<ICommand>();
 
     async send(arg0: string) {
         console.log('connect');
@@ -14,16 +18,16 @@ export class SocketClientService {
     }
 
     private _connection: Connection;
-    private _connect_promise : Promise<void> = null;
+    private _connect_promise: Promise<void> = null;
 
     constructor() {
     }
 
-    connect(){
-        if (this._connect_promise){
+    connect() {
+        if (this._connect_promise) {
             return this._connect_promise;
         }
-        if (this._connection && this._connection.opened){
+        if (this._connection && this._connection.opened) {
             return;
         }
         // const port = document.location.port ? (":" + document.location.port) : "";
@@ -35,28 +39,31 @@ export class SocketClientService {
         const url = `${scheme}://${host}:${port}/${path}`;
         this._connect_promise = new Promise((resolve, reject) => {
             let complete = false;
-            this._connection = new Connection(url, null, () => {
-                if (complete){
-                    return;
+            this._connection = new Connection(url,
+                received_message => this.receive.next(received_message),
+                () => {
+                    if (complete) {
+                        return;
+                    }
+                    if (this._connection.opened) {
+                        this._connect_promise = null;
+                        complete = true;
+                        resolve();
+                    }
+                    if (this._connection.closed) {
+                        this._connect_promise = null;
+                        complete = true;
+                        reject(this._connection.closed_reason);
+                    }
                 }
-                if (this._connection.opened){
-                    this._connect_promise = null;
-                    complete = true;
-                    resolve();
-                }
-                if (this._connection.closed){
-                    this._connect_promise = null;
-                    complete = true;
-                    reject(this._connection.closed_reason);
-                }
-            });
+            );
         });
         return this._connect_promise;
     }
 }
 
 class Connection {
-    
+
     opened = false;
     closed = false;
     connection_error = false;
@@ -90,23 +97,23 @@ class Connection {
         }
         socket.onmessage = (event) => {
             this._update_state();
-            this._receive(event.data);
+            this._receive(JSON.parse(event.data));
         }
     }
 
-    close(){
+    close() {
         this._socket.close(1000, "Closing from client");
         this._on_receive = null;
     }
 
-    send(data: string){
+    send(data: string) {
         console.log("SEND", data);
         this._socket.send(data);
     }
 
     private _receive(data: any) {
         console.log("RECEIVE", data);
-        if (this._on_receive){
+        if (this._on_receive) {
             this._on_receive(data);
         }
     }
@@ -121,7 +128,7 @@ class Connection {
 }
 
 function get_ready_state(socket: WebSocket) {
-    switch(socket.readyState){
+    switch (socket.readyState) {
         case WebSocket.CLOSED: return 'Closed';
         case WebSocket.CLOSING: return "Closing...";
         case WebSocket.CONNECTING: return "Connecting...";

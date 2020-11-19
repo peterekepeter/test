@@ -37,7 +37,7 @@ namespace multi_user_todo_list
             return null; // not found
         }
 
-        public async Task AppendCommand(string documentId, dynamic _command)
+        public async Task<dynamic> AppendCommand(string documentId, dynamic _command)
         {
             dynamic command = _command;
             await LazyInitialize();
@@ -48,6 +48,7 @@ namespace multi_user_todo_list
                 doc.commands.Add(command);
             });
             WriteChangesToStorage();
+            return command;
         }
 
         private async Task ModifyDocument(string id, Action<DocumentModel> modify)

@@ -1,34 +1,30 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { CommandExecutor } from './commands/CommandExecutor';
-import { CommandType } from './commands/CommandType';
 import { ICommand } from './commands/ICommand';
-import { ICreateCommand } from './commands/ICreateCommand';
-import { IRenameCommand } from './commands/IRenameCommand';
-import { Task } from './Task';
 import { TaskSyncService } from './task-sync.service';
-import { generateUniqueId } from './unique-id';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class TaskService {
 
-  private _executor : CommandExecutor = new CommandExecutor();
+    private _executor: CommandExecutor = new CommandExecutor();
 
-  get tasks() { return this._executor.rootTasks; }
+    get tasks() { return this._executor.rootTasks; }
 
-  constructor(private _taskSync: TaskSyncService) { 
-    _taskSync.historyChanged.subscribe(list => {
-      this._executor = new CommandExecutor();
-      this._executor.execAll(list);
-    });
-  }
+    constructor(private _taskSync: TaskSyncService) {
+        _taskSync.historyChanged.subscribe(list => {
+            this._executor = new CommandExecutor();
+            this._executor.execAll(list);
+        });
+        _taskSync.message_stream.subscribe(message => {
+            this._executor.exec(message);
+        })
+    }
 
-  exec(cmd: ICommand) {
-    this._executor.exec(cmd);
-    this._taskSync.add(cmd);
-  }
-
+    exec(cmd: ICommand) {
+        this._executor.exec(cmd);
+        this._taskSync.add(cmd);
+    }
 
 }

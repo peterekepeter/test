@@ -32,6 +32,9 @@ namespace multi_user_todo_list
         public IEnumerable<ClientConnection> AllOpenClients 
             => _clients.Where(c => c.Socket.State == System.Net.WebSockets.WebSocketState.Open);
 
+        public IEnumerable<ClientConnection> AllClientsWatching(string document_id)
+            => AllOpenClients.Where(c => c.WatchDocumentId == document_id);
+
         private async Task GuardedOp(Action op){
             try
             {

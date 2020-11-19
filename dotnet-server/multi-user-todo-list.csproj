@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>multi_user_todo_list</RootNamespace>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

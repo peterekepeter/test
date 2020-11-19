@@ -5,5 +5,9 @@
     <RootNamespace>multi_user_todo_list</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
 
 </Project>

@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace multi_user_todo_list
 {
-    public interface IDocumentService
-    {
-        Task AppendCommand(string documentId, dynamic command);
-    }
 
     public class DocumentService : IDocumentService
     {
@@ -31,7 +27,7 @@ namespace multi_user_todo_list
             public SemaphoreSlim Guard = new SemaphoreSlim(1, 1);
         }
 
-        async Task<DocumentModel> GetById(string documentId)
+        public async Task<DocumentModel> GetDocumentById(string documentId)
         {
             await LazyInitialize();
             if (Store.ContainsKey(documentId))
@@ -41,8 +37,9 @@ namespace multi_user_todo_list
             return null; // not found
         }
 
-        public async Task AppendCommand(string documentId, dynamic command)
+        public async Task AppendCommand(string documentId, dynamic _command)
         {
+            dynamic command = _command;
             await LazyInitialize();
             await ModifyDocument(documentId, doc =>
             {

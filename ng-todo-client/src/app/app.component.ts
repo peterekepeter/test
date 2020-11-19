@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import { ActionsService } from './actions.service';
+import { DocumentService } from './document.service';
 import { Task } from './Task';
 import { TaskService } from './task.service';
 
@@ -20,6 +21,7 @@ export class AppComponent {
 
   constructor(private _tasks: TaskService,
     private _act: ActionsService,
+    private _document: DocumentService,
     private _ref: ChangeDetectorRef){
 
       setInterval(() => {

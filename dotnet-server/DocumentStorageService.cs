@@ -8,7 +8,7 @@ namespace multi_user_todo_list
     public class DocumentStorageService : IDocumentStorageService
     {
 
-        private string _dirPath;
+        private string _dirPath = "data";
         public async Task<DocumentModel[]> ReadAllDocuments()
         {
             if (!Directory.Exists(_dirPath)){
@@ -32,11 +32,5 @@ namespace multi_user_todo_list
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
             await File.WriteAllTextAsync(path, json);
         }
-    }
-
-    public interface IDocumentStorageService
-    {
-        Task WriteDocument(DocumentModel document);
-        Task<DocumentModel[]> ReadAllDocuments();
     }
 }

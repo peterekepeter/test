@@ -9,6 +9,6 @@ namespace multi_user_todo_list
         public DateTime modified = DateTime.UtcNow;
         public string documentId;
         public int maxOrder = 0;
-        public List<dynamic> commands;
+        public List<dynamic> commands = new List<dynamic>();
     }
 }

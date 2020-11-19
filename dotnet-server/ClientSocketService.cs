@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -13,7 +14,7 @@ namespace multi_user_todo_list
         private ClientConnectionList clients = new ClientConnectionList();
         private IDocumentService _document;
 
-        ClientConnectionService(IDocumentService document){
+        public ClientConnectionService(IDocumentService document){
             this._document = document;
         }
 
@@ -33,16 +34,17 @@ namespace multi_user_todo_list
 
         private async Task ReceiveMessage(ClientConnection client, string utfString)
         {
-            var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(utfString);
-            switch (obj.method){
+            dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(utfString);
+            string method = obj.method;
+            switch (method){
                 case "WATCH":
-                    client.WatchDocumentId = obj.documentId;
+                    client.WatchDocumentId = obj.document_id;
                     break;
                 case "WRITE":
-                    await _document.AppendCommand(obj.documentId, obj.command);
+                    await _document.AppendCommand(obj.document_id, obj.command);
                     break;
                 default:
-                    Console.WriteLine($"Unknown method message {utfString}");
+                    Console.WriteLine($"Unknown method: {method} message: {utfString}");
                     break;
             }
         }

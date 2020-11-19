@@ -10,7 +10,7 @@ namespace multi_user_todo_list
 {
     public class ClientConnectionList 
     {
-        private LinkedList<ClientConnection> _clients;
+        private LinkedList<ClientConnection> _clients = new LinkedList<ClientConnection>();
         private SemaphoreSlim _guard = new SemaphoreSlim(1,1);
 
         internal async Task Add(ClientConnection client)
@@ -18,6 +18,7 @@ namespace multi_user_todo_list
             await GuardedOp(() => {
                 _clients.AddFirst(client);
             });
+            Console.WriteLine($"Client {client} connected");
         }
 
         internal async Task Remove(ClientConnection client)
@@ -25,6 +26,7 @@ namespace multi_user_todo_list
             await GuardedOp(() => {
                 _clients.Remove(client);
             });
+            Console.WriteLine($"Client {client} disconnected");
         }
 
         public IEnumerable<ClientConnection> AllOpenClients 

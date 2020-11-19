@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventEmitter } from 'protractor';
 import { Observable, Subject } from 'rxjs';
 import { ICommand } from './commands/ICommand';
+import { DocumentService } from './document.service';
 import { SocketClientService } from './socket-client.service';
 
 @Injectable({
@@ -13,14 +14,19 @@ export class TaskSyncService {
     historyChanged = new Subject<ICommand[]>();
     private static STORAGE_KEY = "CMD_LIST";
 
-    constructor(private _socket_client: SocketClientService) {
+    constructor(private _socket_client: SocketClientService,
+        private _document: DocumentService) {
         setTimeout(() => this.loadFromLocalStorage(), 0);
     }
 
     add(cmd: ICommand) {
         this.list.push(cmd);
         this.storeInLocalStorage();
-        this._socket_client.send(JSON.stringify(cmd));
+        this._socket_client.send(JSON.stringify({
+            method: "WRITE",
+            document_id: this._document.document_id.value,
+            command: cmd
+        }));
     }
 
     storeInLocalStorage() {

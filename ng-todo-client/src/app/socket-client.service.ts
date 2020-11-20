@@ -34,10 +34,9 @@ export class SocketClientService {
         // const port = document.location.port ? (":" + document.location.port) : "";
         // const url = scheme + "://" + document.location.hostname + port + "/ws" ;
         const scheme = document.location.protocol === "https:" ? "wss" : "ws";
-        const host = "localhost";
-        const port = 5000;
+        const host = environment.backend_host || location.host;
         const path = "ws";
-        const url = `${environment.backend_url}/${path}`;
+        const url = `${scheme}://${host}/${path}`;
         this._connect_promise = new Promise((resolve, reject) => {
             let complete = false;
             this._connection = new Connection(url,

@@ -33,12 +33,20 @@ export class TaskSyncService {
     }
     
     async load_from_server(document_id: string) {
-        const request = await fetch(`${environment.backend_url}/document/${encodeURIComponent(document_id)}`);
-        if (request.status !== 200){
-            return;
+        try
+        {
+            const host = environment.backend_host || location.host;
+            const request = await fetch(`${location.protocol}//${host}/document/${encodeURIComponent(document_id)}`);
+            if (request.status !== 200){
+                return;
+            }
+            const result = await request.json() as ICommand[];
+            this.list = result;
+            this.historyChanged.next(this.list);
         }
-        const result = await request.json() as ICommand[];
-        this.list = result;
-        this.historyChanged.next(this.list);
+        catch (e){
+            console.error("failed to load doc");
+            this.list = [];
+        }
     }
 }

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
@@ -68,6 +70,12 @@ namespace multi_user_todo_list
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    env.ContentRootPath + "../../ng-todo-client/dist/ng-todo-client")
+            });
 
             // global cors policy
             app.UseCors(x => x

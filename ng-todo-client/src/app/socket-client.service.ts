@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { ICommand } from './commands/ICommand';
 
 
@@ -36,7 +37,7 @@ export class SocketClientService {
         const host = "localhost";
         const port = 5000;
         const path = "ws";
-        const url = `${scheme}://${host}:${port}/${path}`;
+        const url = `${environment.backend_url}/${path}`;
         this._connect_promise = new Promise((resolve, reject) => {
             let complete = false;
             this._connection = new Connection(url,

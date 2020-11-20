@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ namespace multi_user_todo_list
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
             services.AddSingleton<IDocumentService,DocumentService>();
             services.AddSingleton<IDocumentStorageService,DocumentStorageService>();
             services.AddSingleton<ClientConnectionService>();
@@ -29,6 +31,8 @@ namespace multi_user_todo_list
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var frontendAppOrigin = Environment.GetEnvironmentVariable("ALLOW_ORIGIN");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -64,6 +68,12 @@ namespace multi_user_todo_list
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithOrigins(frontendAppOrigin)); 
 
             app.UseEndpoints(endpoints =>
             {

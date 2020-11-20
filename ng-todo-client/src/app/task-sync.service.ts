@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { ICommand } from './commands/ICommand';
 import { DocumentService } from './document.service';
 import { SocketClientService } from './socket-client.service';
@@ -32,7 +33,7 @@ export class TaskSyncService {
     }
     
     async load_from_server(document_id: string) {
-        const request = await fetch('document/' + encodeURIComponent(document_id));
+        const request = await fetch(`${environment.backend_url}/document/${encodeURIComponent(document_id)}`);
         if (request.status !== 200){
             return;
         }
